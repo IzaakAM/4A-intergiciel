@@ -1,0 +1,122 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka-1:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka-1
+    container_name: kafka-1
+    depends_on:
+      - zookeeper
+    expose:
+      - 9093
+    ports:
+      - "29093:29093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ADVERTISED_HOST_NAME: kafka-1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: SSL:SSL,EXTERNAL:SSL
+      KAFKA_ADVERTISED_LISTENERS: SSL://kafka-1:9093,EXTERNAL://localhost:29093
+      KAFKA_INTER_BROKER_LISTENER_NAME: SSL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: TRUE
+      KAFKA_NUM_PARTITIONS: 30
+      KAFKA_SSL_CLIENT_AUTH: 'required'
+      KAFKA_SSL_KEYSTORE_FILENAME: 'keystore/kafka-1.server.keystore.jks'
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: 'keystore/creds'
+      KAFKA_SSL_KEY_CREDENTIALS: 'keystore/creds'
+      KAFKA_SSL_TRUSTSTORE_FILENAME: 'truststore/kafka.truststore.jks'
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: 'keystore/creds'
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ''
+    volumes:
+      - ./etc/certs/keystore/kafka-1.server.keystore.jks:/etc/kafka/secrets/keystore/kafka-1.server.keystore.jks:ro
+      - ./etc/certs/truststore/kafka.truststore.jks:/etc/kafka/secrets/truststore/kafka.truststore.jks:ro
+      - ./etc/certs/keystore/creds:/etc/kafka/secrets/keystore/creds:ro
+
+  kafka-2:
+    image: confluentinc/cp-kafka:latest
+    hostname: kakfa-2
+    container_name: kafka-2
+    depends_on:
+      - zookeeper
+    expose:
+      - 9093
+    ports:
+      - "39093:39093"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ADVERTISED_HOST_NAME: kafka-2
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL,EXTERNAL:SSL
+      KAFKA_ADVERTISED_LISTENERS: SSL://kafka-2:9093,EXTERNAL://localhost:39093
+      KAFKA_INTER_BROKER_LISTENER_NAME: SSL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: TRUE
+      KAFKA_NUM_PARTITIONS: 30
+      KAFKA_SSL_CLIENT_AUTH: 'required'
+      KAFKA_SSL_KEYSTORE_FILENAME: 'keystore/kafka-2.server.keystore.jks'
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: 'keystore/creds'
+      KAFKA_SSL_KEY_CREDENTIALS: 'keystore/creds'
+      KAFKA_SSL_TRUSTSTORE_FILENAME: 'truststore/kafka.truststore.jks'
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: 'keystore/creds'
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ''
+    volumes:
+      - ./etc/certs/keystore/kafka-2.server.keystore.jks:/etc/kafka/secrets/keystore/kafka-2.server.keystore.jks:ro
+      - ./etc/certs/truststore/kafka.truststore.jks:/etc/kafka/secrets/truststore/kafka.truststore.jks:ro
+      - ./etc/certs/keystore/creds:/etc/kafka/secrets/keystore/creds:ro
+      
+  kafka-3:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka-3
+    container_name: kakfa-3
+    depends_on:
+      - zookeeper
+    expose:
+      - 9093
+    ports:
+      - "49093:49093"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ADVERTISED_HOST_NAME: kafka-3
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL,EXTERNAL:SSL
+      KAFKA_ADVERTISED_LISTENERS: SSL://kafka-3:9093,EXTERNAL://localhost:49093
+      KAFKA_INTER_BROKER_LISTENER_NAME: SSL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: TRUE
+      KAFKA_NUM_PARTITIONS: 30
+      KAFKA_SSL_CLIENT_AUTH: 'required'
+      KAFKA_SSL_KEYSTORE_FILENAME: 'keystore/kafka-3.server.keystore.jks'
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: 'keystore/creds'
+      KAFKA_SSL_KEY_CREDENTIALS: 'keystore/creds'
+      KAFKA_SSL_TRUSTSTORE_FILENAME: 'truststore/kafka.truststore.jks'
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: 'keystore/creds'
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ''
+    volumes:
+      - ./etc/certs/keystore/kafka-3.server.keystore.jks:/etc/kafka/secrets/keystore/kafka-3.server.keystore.jks:ro
+      - ./etc/certs/truststore/kafka.truststore.jks:/etc/kafka/secrets/truststore/kafka.truststore.jks:ro
+      - ./etc/certs/keystore/creds:/etc/kafka/secrets/keystore/creds:ro
